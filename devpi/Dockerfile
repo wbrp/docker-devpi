@@ -17,14 +17,16 @@ RUN pip3 install \
 RUN adduser -D devpi \
     && mkdir /devpi \
     && chown -R devpi:devpi /devpi
-VOLUME ["/devpi"]
 
 # Copy static files
-RUN ln -s /usr/lib/python3.4/site-packages/devpi_web/static /devpi/+static
+RUN cp -R /usr/lib/python3.4/site-packages/devpi_web/static /devpi/+static
+
+# Expose volume
+VOLUME ["/devpi"]
 
 # Change to unprivileged user
 USER devpi
 
 # Entry point
 EXPOSE 4040
-CMD ["devpi-server", "--host", "0.0.0.0", "--port", "4040", "--serverdir", "/devpi"]
+CMD ["devpi-server", "--host", "0.0.0.0", "--port", "4040", "--serverdir", "/devpi/server"]

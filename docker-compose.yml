@@ -1,0 +1,17 @@
+devpi:
+  restart: always
+  build: ./devpi
+  expose:
+    - 4040
+  volumes:
+    - /devpi
+
+nginx:
+  restart: always
+  build: ./nginx
+  ports:
+    - 5002:80
+  links:
+    - devpi
+  volumes_from:
+    - devpi
