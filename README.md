@@ -78,5 +78,10 @@ Now re-create the entire setup:
     $ docker-compose up -d
 
 
+# License
+
+MIT License, see `LICENSE.md`.
+
+
 [0]: https://hub.docker.com/_/alpine/
 [1]: http://doc.devpi.net/latest/quickstart-server.html#versioning-exporting-and-importing-server-state
