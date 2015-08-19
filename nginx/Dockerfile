@@ -7,6 +7,9 @@ RUN apk add --update nginx
 # Copy config file
 ADD nginx.conf /etc/nginx/nginx.conf
 
+# Change to unprivileged user
+USER nginx
+
 # Entry point
 EXPOSE 80
 CMD ["nginx"]

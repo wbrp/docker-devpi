@@ -22,7 +22,7 @@ RUN adduser -D devpi \
 RUN cp -R /usr/lib/python3.4/site-packages/devpi_web/static /devpi/+static
 
 # Expose volume
-VOLUME ["/devpi"]
+VOLUME ["/devpi/server"]
 
 # Change to unprivileged user
 USER devpi

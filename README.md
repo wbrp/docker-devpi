@@ -5,59 +5,78 @@ This Docker Compose based setup runs DevPi behind Nginx.
 The images are based on [Alpine Linux][0], which
 enables far smaller images than Debian or the Python image.
 
+Note that this Devpi container only works properly when being bound to port 80.
+Otherwise you will need to adjust `proxy_set_header X-outside-url` in
+`nginx/nginx.conf`.
+
+
 ## Building images
 
     $ docker-compose build
 
+
 ## Starting containers
 
     $ docker-compose up -d
+
 
 ## Recreating / updating containers
 
 Rebuild them with ``docker-compose build``, then recreate the containers with
 ``docker-compose up -d``. Volumes will not be affected.
 
+
 ## Upgrading to a new major Devpi version
 
-To upgrade Devpi, you need to [export and re-import the data][1].
+To upgrade Devpi, you need to [export and re-import the data][1]. First, dump
+all the data.
 
     $ export DUMPDIR=dump-$(date +%Y%m%d-%H%M%S)
     $ docker run --rm \
-        --volumes-from=dockerdevpi_devpi_1 \
+        --volumes-from=dockerdevpi_data_1 \
         -v $(pwd):/dump \
         dockerdevpi_devpi \
-        devpi-server --export /dump/$DUMPDIR
+        devpi-server --serverdir /devpi/server --export /dump/$DUMPDIR
 
 Now you have a folder called `dump-$timestamp` in your current directory.
 
-Stop and delete all containers:
+Stop and recreate the devpi container:
 
-    $ docker-compose stop
-    $ docker-compose rm
+    $ docker-compose stop devpi
+    $ docker-compose build devpi
 
-Rebuild the containers:
-
-    $ docker-compose build
-
-Start devpi in idle mode, so we can use its volume
-
-    $ docker-compose run -d devpi tail -f /bin/sh
-
-Import the old server state:
+Import the old server state to a different server directory:
 
     $ export DUMPDIR=<name-of-dump-directory>
     $ docker run --rm \
-        --volumes-from=dockerdevpi_devpi_run_1 \
+        --volumes-from=dockerdevpi_data_1 \
         -v $(pwd)/$DUMPDIR:/dump \
         dockerdevpi_devpi \
-        devpi-server --serverdir /devpi/server --import /dump
+        devpi-server --serverdir /devpi/server-upgrade --import /dump
 
-Now stop the idle devpi container and start the setup in regular configuration:
+This might take a while. When it's done, do a quick test to see whether
+everything worked:
 
-    $ docker kill -s=INT dockerdevpi_devpi_run_1
-    $ docker rm dockerdevpi_devpi_run_1
+    $ docker run --rm \
+        -t -i \
+        --volumes-from=dockerdevpi_data_1 \
+        -p 4040:4040 \
+        dockerdevpi_devpi \
+        devpi-server --host 0.0.0.0 --port 4040 --serverdir /devpi/server-upgrade
+
+If everything on `http://localhost:4040/` looks fine, you can press `CTRL+C` to
+stop the test server and then make the upgrade permanent:
+
+    $ docker run --rm \
+        --volumes-from=dockerdevpi_data_1 \
+        dockerdevpi_devpi \
+        /bin/sh -c \
+        "rm -rf /devpi/server/* && mv /devpi/server-upgrade/* /devpi/server/"
+    
+Now re-create the entire setup:
+
     $ docker-compose up -d
+
 
 [0]: https://hub.docker.com/_/alpine/
 [1]: http://doc.devpi.net/latest/quickstart-server.html#versioning-exporting-and-importing-server-state
