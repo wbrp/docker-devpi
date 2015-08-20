@@ -29,10 +29,8 @@ USER devpi
 
 # Entry point
 EXPOSE 4040
-CMD [ \
-    "devpi-server", \
-    "--host", "0.0.0.0", \
-    "--port", "4040", \
-    "--serverdir", "/devpi/server", \
-    "--restrict-modify", "root", \
-]
+CMD ["devpi-server", \
+     "--host", "0.0.0.0", \
+     "--port", "4040", \
+     "--serverdir", "/devpi/server", \
+     "--restrict-modify", "root"]
