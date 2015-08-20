@@ -70,10 +70,7 @@ stop the test server and then make the upgrade permanent:
     $ docker run --rm \
         --volumes-from=dockerdevpi_data_1 \
         dockerdevpi_devpi \
-        /bin/sh -c \
-        "rm -rf /devpi/server/*
-            && mv /devpi/server-upgrade/* /devpi/server/
-            && mv /devpi/server-upgrade/.* /devpi/server/"
+        /bin/sh /devpi/upgrade.sh
     
 Now re-create the entire setup:
 

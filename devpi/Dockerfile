@@ -27,6 +27,9 @@ VOLUME ["/devpi/server"]
 # Change to unprivileged user
 USER devpi
 
+# Add upgrade script
+ADD /devpi/ upgrade.sh
+
 # Entry point
 EXPOSE 4040
 CMD ["devpi-server", \
