@@ -42,7 +42,7 @@ Now you have a folder called `dump-$timestamp` in your current directory.
 
 Stop and recreate the devpi container:
 
-    $ docker-compose stop devpi
+    $ docker-compose stop devpi nginx
     $ docker-compose build devpi
 
 Import the old server state to a different server directory:
@@ -60,18 +60,20 @@ everything worked:
     $ docker run --rm \
         -t -i \
         --volumes-from=dockerdevpi_data_1 \
-        -p 4040:4040 \
+        -p 80:4040 \
         dockerdevpi_devpi \
         devpi-server --host 0.0.0.0 --port 4040 --serverdir /devpi/server-upgrade
 
-If everything on `http://localhost:4040/` looks fine, you can press `CTRL+C` to
+If everything on `http://localhost/` looks fine, you can press `CTRL+C` to
 stop the test server and then make the upgrade permanent:
 
     $ docker run --rm \
         --volumes-from=dockerdevpi_data_1 \
         dockerdevpi_devpi \
         /bin/sh -c \
-        "rm -rf /devpi/server/* && mv /devpi/server-upgrade/* /devpi/server/"
+        "rm -rf /devpi/server/*
+            && mv /devpi/server-upgrade/* /devpi/server/
+            && mv /devpi/server-upgrade/.* /devpi/server/"
     
 Now re-create the entire setup:
 
