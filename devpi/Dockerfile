@@ -21,14 +21,14 @@ RUN adduser -D devpi \
 # Copy static files
 RUN cp -R /usr/lib/python3.4/site-packages/devpi_web/static /devpi/+static
 
+# Add upgrade script
+ADD upgrade.sh /devpi/
+
 # Expose volume
 VOLUME ["/devpi/server"]
 
 # Change to unprivileged user
 USER devpi
-
-# Add upgrade script
-ADD /devpi/ upgrade.sh
 
 # Entry point
 EXPOSE 4040
