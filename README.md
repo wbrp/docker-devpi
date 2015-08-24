@@ -26,6 +26,11 @@ Rebuild them with ``docker-compose build``, then recreate the containers with
 ``docker-compose up -d``. Volumes will not be affected.
 
 
+## Adding basic auth
+
+Edit the files `nginx/auth.conf` and `nginx/htpasswd` and rebuild the containers.
+
+
 ## Upgrading to a new major Devpi version
 
 To upgrade Devpi, you need to [export and re-import the data][1]. First, dump
