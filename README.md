@@ -9,7 +9,7 @@ Note that this Devpi container only works properly when being bound to port 80.
 Otherwise you will need to adjust `proxy_set_header X-outside-url` in
 `nginx/nginx.conf`.
 
-![diagram](docker_devpi.svg)
+![diagram](docker_devpi.png)
 
 
 ## Building images
