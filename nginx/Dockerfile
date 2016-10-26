@@ -1,5 +1,5 @@
-FROM alpine:3.2
-MAINTAINER Danilo Bargen <mail@dbrgn.ch>
+FROM alpine:3.4
+MAINTAINER Webrepublic Engineering <tech@webrepublic.com>
 
 # Dependencies
 RUN apk add --update nginx
