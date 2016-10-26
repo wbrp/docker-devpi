@@ -5,8 +5,7 @@ MAINTAINER Danilo Bargen <mail@dbrgn.ch>
 RUN apk add --update nginx
 
 # Copy config file
-COPY ["nginx.conf", "auth.conf", "htpasswd", "/etc/nginx/"]
-RUN chown root:nginx /etc/nginx/htpasswd && chmod 660 /etc/nginx/htpasswd
+COPY ["nginx.conf", "/etc/nginx/"]
 
 # Change to unprivileged user
 USER nginx
