@@ -62,11 +62,11 @@ everything worked:
     $ docker run --rm \
         -t -i \
         --volumes-from=dockerdevpi_data_1 \
-        -p 80:4040 \
+        -p 8080:4040 \
         dockerdevpi_devpi \
         devpi-server --host 0.0.0.0 --port 4040 --serverdir /devpi/server-upgrade
 
-If everything on `http://localhost/` looks fine, you can press `CTRL+C` to
+If everything on `http://localhost:8080/` looks fine, you can press `CTRL+C` to
 stop the test server and then make the upgrade permanent:
 
     $ docker run --rm \
