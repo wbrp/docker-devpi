@@ -1,5 +1,5 @@
-FROM alpine:3.2
-MAINTAINER Danilo Bargen <mail@dbrgn.ch>
+FROM alpine:3.4
+MAINTAINER Webrepublic Engineering <tech@webrepublic.com>
 
 # Env vars
 ENV PYTHONUNBUFFERED=1
@@ -9,9 +9,9 @@ RUN apk add --update python3 py-pip
 
 # Install devpi
 RUN pip3 install \
-    "devpi-server>=2.2,<2.3" \
-    "devpi-web>=2.4.0,<2.5" \
-    "devpi-client>=2.3.0,<2.4"
+    "devpi-server>=4.0.0,<4.1" \
+    "devpi-web>=3.1.0,<3.2" \
+    "devpi-client>=2.6.3,<2.7"
 
 # Server directory
 RUN adduser -D devpi \
@@ -19,7 +19,7 @@ RUN adduser -D devpi \
     && chown -R devpi:devpi /devpi
 
 # Copy static files
-RUN cp -R /usr/lib/python3.4/site-packages/devpi_web/static /devpi/+static
+RUN cp -R /usr/lib/python3.5/site-packages/devpi_web/static /devpi/+static
 
 # Add upgrade script
 ADD upgrade.sh /devpi/
