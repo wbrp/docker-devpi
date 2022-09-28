@@ -10,9 +10,10 @@ The purpose of this image is to serve [devpi](https://github.com/devpi/devpi) wi
 Both images are currently based on 
 [`python:3.8.14-slim`](https://hub.docker.com/_/python/tags?page=1&name=3.8.14-slim).
 
-This devpi container only works properly when being bound to port 80. Otherwise, you will need to 
-adjust `proxy_set_header X-outside-url` in `nginx/nginx.conf`. See also the two dockerfiles under
-the folders [`devpi`](./devpi) and [`nginx`](./nginx).
+The nginx webserver listens on the host port 80, which is mapped to 8080 in the container. You can 
+change this by adjusting `proxy_set_header X-outside-url` in 
+[`nginx/nginx.conf`](./nginx/nginx.conf), the port mapping in 
+[`docker-compose.yml`](./docker-compose.yml) and [`nginx/Dockerfile`](./nginx/Dockerfile).
 
 ## Docker commands
 
