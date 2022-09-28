@@ -18,7 +18,6 @@ RUN mkdir -p /devpi/server /devpi/server-upgrade
 WORKDIR devpi
 
 # Copy files into /devpi.
-ADD upgrade.sh .
 ADD requirements.txt .
 
 # Install devpi dependencies.
