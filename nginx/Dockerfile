@@ -1,15 +1,17 @@
-FROM alpine:3.4
+FROM python:3.8.14-slim
 MAINTAINER Webrepublic Engineering <tech@webrepublic.com>
 
-# Dependencies
-RUN apk add --update nginx
+# Update software.
+RUN apt-get update
+RUN apt-get dist-upgrade -y
 
-# Copy config file
+# Install nginx.
+RUN apt-get install nginx -y
+
+# Copy the nginx config file.
 COPY ["nginx.conf", "/etc/nginx/"]
 
-# Change to unprivileged user
-USER nginx
-
-# Entry point
+# The container listens on this port at runtime.
 EXPOSE 8080
+
 CMD ["nginx"]
