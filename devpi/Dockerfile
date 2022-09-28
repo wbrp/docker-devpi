@@ -31,10 +31,9 @@ RUN devpi-init --serverdir /devpi/server
 # The container listens on this port at runtime.
 EXPOSE 4040
 
-# https://devpi.net/docs/devpi/devpi/latest/+d/quickstart-server.html#versioning-exporting-and-importing-server-state
 CMD ["devpi-server", \
      "--host", "0.0.0.0", \
      "--port", "4040", \
      "--serverdir", "/devpi/server", \
-     # Specify which users/groups may create other users and their indices.
+     # Only root can create other users and their indices.
      "--restrict-modify", "root"]
