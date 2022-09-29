@@ -6,7 +6,6 @@ services:
       - 4040
     volumes:
       - server:/devpi/server
-      - server-upgrade:/devpi/server-upgrade
 
   nginx:
     restart: always
@@ -18,4 +17,3 @@ services:
 
 volumes:
   server:
-  server-upgrade:

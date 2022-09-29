@@ -10,9 +10,8 @@ RUN apt-get update
 RUN apt-get dist-upgrade -y
 RUN python -m pip install --upgrade pip
 
-# Create the folders where the devpi data (e.g. the indices) are saved.
-# /devpi/server-upgrade is where the new server data resides, if we have to update it
-RUN mkdir -p /devpi/server /devpi/server-upgrade
+# Create the folder where the devpi data (e.g. the indices) are saved.
+RUN mkdir -p /devpi/server
 
 # Set the current working directory inside the container.
 WORKDIR devpi
