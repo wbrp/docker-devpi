@@ -1,8 +1,7 @@
 # docker-devpi
 
 This repository contains a [`docker-compose.yml`](./docker-compose.yml), which can be used to build
-2 docker images from 2 services, `devpi` and `nginx`, which share 2 named volumes `server` and 
-`server-upgrade`. 
+2 docker images from 2 services, `devpi` and `nginx`, which share a named volume `server`.
 
 The purpose of this image is to serve [devpi](https://github.com/devpi/devpi) with 
 [nginx](https://www.nginx.com/). 
