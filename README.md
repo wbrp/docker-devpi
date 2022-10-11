@@ -1,88 +1,76 @@
-# A DevPi Docker Setup
+# docker-devpi
 
-This Docker Compose based setup runs DevPi behind Nginx.
+This repository contains a [`docker-compose.yml`](./docker-compose.yml), which can be used to build
+2 docker images from 2 services, `devpi` and `nginx`, which share a named volume `server`.
 
-The images are based on [Alpine Linux][0], which
-enables far smaller images than Debian or the Python image.
+The purpose of this image is to serve [devpi](https://github.com/devpi/devpi) with 
+[nginx](https://www.nginx.com/). 
 
-Note that this Devpi container only works properly when being bound to port 80.
-Otherwise you will need to adjust `proxy_set_header X-outside-url` in
-`nginx/nginx.conf`.
+Both images are currently based on 
+[`python:3.8.14-slim`](https://hub.docker.com/_/python/tags?page=1&name=3.8.14-slim).
 
-![diagram](docker_devpi.png)
+The nginx webserver listens on the host port 80, which is mapped to 8080 in the container. You can 
+change this by adjusting `proxy_set_header X-outside-url` in 
+[`nginx/nginx.conf`](./nginx/nginx.conf), the port mapping in 
+[`docker-compose.yml`](./docker-compose.yml) and [`nginx/Dockerfile`](./nginx/Dockerfile).
 
+## Docker commands
 
-## Building images
+### List images
 
-    $ docker-compose build
+    docker image ls
 
+This shows info about images, such as their IDs.
 
-## Starting containers
+### List containers (with total file sizes)
 
-    $ docker-compose up -d
+    docker container ls -s
 
+### List volumes
 
-## Recreating / updating containers
+    docker volume ls
 
-Rebuild them with ``docker-compose build``, then recreate the containers with
-``docker-compose up -d``. Volumes will not be affected.
+### Build the images
 
+    docker-compose build
 
-## Upgrading to a new major Devpi version
+To rebuild an image, just re-execute the previous command above. Note that this doesn't affect the 
+volumes, i.e. they are not deleted, and, if you changed something in the directory that is mounted 
+to a volume, the next time you rebuild the image and the container, you will still have your 
+changes.
 
-To upgrade Devpi, you need to [export and re-import the data][1]. First, dump
-all the data.
+### Start a container
 
-    $ export DUMPDIR=dump-$(date +%Y%m%d-%H%M%S)
-    $ docker run --rm \
-        --volumes-from=dockerdevpi_data_1 \
-        -v $(pwd):/dump \
-        dockerdevpi_devpi \
-        devpi-server --serverdir /devpi/server --export /dump/$DUMPDIR
+    docker-compose up -d
 
-Now you have a folder called `dump-$timestamp` in your current directory.
+To recreate a container, just re-execute the previous command above. This also doesn't delete the 
+existing volume.
 
-Stop and recreate the devpi container:
+### Delete an image
 
-    $ docker-compose stop devpi nginx
-    $ docker-compose build devpi
+    docker image rm <image-id>
 
-Import the old server state to a different server directory:
+### Delete a container
 
-    $ export DUMPDIR=<name-of-dump-directory>
-    $ docker run --rm \
-        --volumes-from=dockerdevpi_data_1 \
-        -v $(pwd)/$DUMPDIR:/dump \
-        dockerdevpi_devpi \
-        devpi-server --serverdir /devpi/server-upgrade --import /dump
+1. `docker container stop <container-id>`
+2. `docker container rm <container-id>`
 
-This might take a while. When it's done, do a quick test to see whether
-everything worked:
+### Delete a volume
 
-    $ docker run --rm \
-        -t -i \
-        --volumes-from=dockerdevpi_data_1 \
-        -p 8080:4040 \
-        dockerdevpi_devpi \
-        devpi-server --host 0.0.0.0 --port 4040 --serverdir /devpi/server-upgrade
+    docker volume rm <volume-id>
 
-If everything on `http://localhost:8080/` looks fine, you can press `CTRL+C` to
-stop the test server and then make the upgrade permanent:
+### Delete all unused volumes
 
-    $ docker run --rm \
-        --volumes-from=dockerdevpi_data_1 \
-        dockerdevpi_devpi \
-        /bin/sh /devpi/upgrade.sh
+    docker volume prune
 
-Now re-create the entire setup:
+### Copy `/devpi/server` into a local folder on the host
+    
+    docker cp <container-id>:/devpi/server <host-destination-folder>
 
-    $ docker-compose up -d
+### Backup a volume
 
+See [the documentation](https://docs.docker.com/storage/volumes/#backup-restore-or-migrate-data-volumes).
 
 # License
 
-MIT License, see `LICENSE.md`.
-
-
-[0]: https://hub.docker.com/_/alpine/
-[1]: http://doc.devpi.net/latest/quickstart-server.html#versioning-exporting-and-importing-server-state
+[`MIT License`](./LICENSE.md)

@@ -1,23 +1,19 @@
-data:
-  build: ./data
-  volumes:
-    - /devpi/server
-    - /devpi/server-upgrade
+services:
+  devpi:
+    restart: always
+    build: ./devpi
+    expose:
+      - 4040
+    volumes:
+      - server:/devpi/server
 
-devpi:
-  restart: always
-  build: ./devpi
-  expose:
-    - 4040
-  volumes_from:
-    - data
+  nginx:
+    restart: always
+    build: ./nginx
+    ports:
+      - 80:8080
+    volumes_from:
+      - devpi
 
-nginx:
-  restart: always
-  build: ./nginx
-  ports:
-    - 80:8080
-  links:
-    - devpi
-  volumes_from:
-    - data
+volumes:
+  server:
